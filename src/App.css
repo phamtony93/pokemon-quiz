@@ -12,7 +12,8 @@
   display: flex;
   position: relative;
   /* text-align: center; */
-  margin-top: 50px;
+  padding-top: 50px;
+  margin-left: 20px;
   /* z-index: -100; */
   /* top: 0;
   left: 0; */
@@ -53,6 +54,7 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
+  margin-left: 20px;
 }
 
 .app_input > button {
@@ -62,4 +64,8 @@
 .app_input > label {
   color: white;
   /* margin-right: 10px; */
+}
+
+.app_input > input {
+  margin-left: 10px;
 }

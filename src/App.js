@@ -101,11 +101,14 @@ function App() {
       } else if (event.key === "Escape") {
         console.log("escape");
       }
+    } else {
+      startGame();
     }
   };
 
   const endGame = () => {
     setGameStatus(status.END);
+    setAnswer("");
   };
 
   const startGame = () => {
@@ -122,9 +125,9 @@ function App() {
   return (
     <div className="app">
       {/* temp span to show answer until dev is compconsted */}
-      <span style={{ color: "white" }}>
-        Current Pokemon is: {currentPokemon ? currentPokemon.name : null}
-      </span>
+      {/* <span style={{ color: "white" }} className="app_hint">
+        answer: {currentPokemon ? currentPokemon.name : null}
+      </span> */}
       <div className="app_gameScreen">
         <div>
           <img src={BACKGROUND} alt="" className="app_background" />
@@ -141,20 +144,22 @@ function App() {
       </div>
 
       <div className="app_input">
-        <label>
-          {" "}
-          Name
-          <input
-            type="text"
-            autoFocus
-            value={answer}
-            onKeyPress={enterPressed}
-            onChange={handleChange}
-          ></input>
-        </label>
+        <label for="answer">Name</label>
+        <input
+          id="answer"
+          type="text"
+          autoFocus
+          value={answer}
+          onKeyPress={enterPressed}
+          onChange={handleChange}
+        ></input>
         <button onClick={() => checkAnswer()}>Submit</button>
       </div>
-      <StartScreen handleClose={startGame} gameStatus={gameStatus}>
+      <StartScreen
+        handleClose={startGame}
+        gameStatus={gameStatus}
+        onKeyPress={enterPressed}
+      >
         <h2>{gameStatus === "end" ? `You got ${score} correct!` : ""}</h2>
       </StartScreen>
     </div>

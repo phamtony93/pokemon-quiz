@@ -1,7 +1,7 @@
 import React from "react";
 import "./StartScreen.css";
 
-const StartScreen = ({ handleClose, gameStatus, children, score }) => {
+const StartScreen = ({ handleClose, gameStatus, children, onKeyPress }) => {
   const showHideClassName =
     gameStatus === "inprogress" ? "modal display-none" : "modal display-block";
 
@@ -10,7 +10,7 @@ const StartScreen = ({ handleClose, gameStatus, children, score }) => {
     <div className={showHideClassName}>
       <section className="startScreen__main">
         {children}
-        <button onClick={handleClose}>
+        <button onClick={handleClose} onKeyPress={onKeyPress}>
           {gameStatus === "end" ? "Play Again" : "Start Game"}
         </button>
       </section>
