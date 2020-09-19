@@ -1,141 +1,163 @@
-import React, {useState, useEffect} from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import StartScreen from "./components/StartScreen";
 // import Bulbasaur from './assets/svg/1.svg';
-
 
 //quesitons for Ben
 //1. how to dynamically import the photos
-//2. difference between setting function to return promise vs not 
-//3. 
-const BACKGROUND = 'https://external-preview.redd.it/e5zoQw-hgw-LCjdhC_4G8IAcHxex5pzda_BD_FPTcBY.png?auto=webp&s=c0b96b5ec20010a15864b8a0c9b202c119e52fe8';
-const END_POINT = 'https://pokeapi.co/api/v2/';
+//2. difference between setting function to return promise vs not
+//3.
+const status = {
+  INPROGRESS: "inprogress",
+  START: "start",
+  END: "end",
+};
 
+const BACKGROUND =
+  "https://external-preview.redd.it/e5zoQw-hgw-LCjdhC_4G8IAcHxex5pzda_BD_FPTcBY.png?auto=webp&s=c0b96b5ec20010a15864b8a0c9b202c119e52fe8";
+const END_POINT = "https://pokeapi.co/api/v2/";
+const LOADING_IMAGE = "./assets/loading-image.jpg";
 function App() {
-  let [answer, setAnswer] = useState("");
-  let [currentPokemon, setCurrentPokemon] = useState(null);
-  let [showPokemon, setShowPokemon] = useState(false);
-  let [score, setScore] = useState(0);
+  const [answer, setAnswer] = useState("");
+  const [currentPokemon, setCurrentPokemon] = useState(null);
+  const [showPokemon, setShowPokemon] = useState(false);
+  const [score, setScore] = useState(0);
+  const [randomNum, setRandomNum] = useState(null);
+  const [gameStatus, setGameStatus] = useState("start");
+  const [timer, setTimer] = useState(10);
 
   const getRandomValue = () => {
-    return Math.floor(Math.random() * 649) + 1
-  }
+    return Math.floor(Math.random() * 649) + 1;
+  };
 
-  // const pokemonDetails = () => {
-  //   fetch(`${END_POINT}pokemon/${getRandomValue()}`)
-  //     .then(details => {
-  //       details.json()
-  //         .then(data => console.log(data["name"], data))
-  //   })
-  //   .catch(err =>
-  //     console.log(err))
-  // } 
-
-  const getPokemon = async () => {
-    const pokeResults = await fetch(`${END_POINT}pokemon/${getRandomValue()}`)
-    const data = await pokeResults.json()
-    return data
-  } 
-
-  const getPokemon2 = () => {
-    return new Promise((resolve, reject) => {
-      const pokeResults = fetch(`${END_POINT}pokemon/${getRandomValue()}`)
-        .then((pokemon => {
-          pokemon.json()
-        }))
-        .then(data => {
-          if (data) {
-            resolve(data)
-          } else {
-            reject('Unable to retrieve Pokemon')
-          }
-        })
-    })
-  }
+  const getPokemon = async (val) => {
+    const pokeResults = await fetch(`${END_POINT}pokemon/${val}`);
+    const data = await pokeResults.json();
+    return data;
+  };
 
   useEffect(() => {
-
+    const val = getRandomValue();
+    setRandomNum(val);
     const setPokemon = async () => {
       try {
-        const pokeResults = await fetch(`${END_POINT}pokemon/${getRandomValue()}`);
+        const pokeResults = await fetch(`${END_POINT}pokemon/${val}`);
         const data = await pokeResults.json();
-        setCurrentPokemon(data)
-        console.log(data)
-      } catch(e) {
+        setCurrentPokemon(data);
+        console.log(data);
+      } catch (e) {
         console.log(e);
       }
+    };
+    setPokemon();
+  }, []);
+
+  useEffect(() => {
+    if (gameStatus === "inprogress") {
+      if (timer > 0) {
+        console.log("1");
+        setTimeout(() => setTimer(timer - 1), 1000);
+      } else {
+        endGame();
+        console.log(gameStatus);
+      }
     }
-      setPokemon()
-  }, [])
-
-  // // const getPokemon = async (pokemonId) => {
-  // //   let randomPokemon = await import(`./assets/svg/${pokemonId}.svg`)
-  // //   setPokemon(randomPokemon)
-  // // }
-
-  // let loadImage = imageName => {
-  //   import(`./assets/svg/1.svg`).then(image => {
-  //     this.setState({
-  //       image: image
-  //     });
-  //   });
-  // };
-
-  // loadImage();
-  //  getPokemon(1)
+  }, [timer, gameStatus]);
 
   const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
 
   const handleChange = (e) => {
     setAnswer(e.target.value);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('You have submitted');
-  }
+  };
 
   const checkAnswer = async () => {
     if (answer === currentPokemon.name) {
-      setScore(score += 1)
+      setScore(score + 1);
     } else {
-      console.log('wrong!')
+      console.log("wrong!");
       //trigger some x sign?
     }
     //show pokemon - set show to true
-    setAnswer('');
-    revealPokemon();
-    const pokemon = await getPokemon()
-    setCurrentPokemon(pokemon)
-  }
+    setAnswer("");
+    await revealPokemon();
+    const val = getRandomValue();
+    setRandomNum(val);
+    const pokemon = await getPokemon(val);
+    setCurrentPokemon(pokemon);
+  };
 
   const revealPokemon = async () => {
     setShowPokemon(true);
-    await sleep(2000);
+    await sleep(500);
     setShowPokemon(false);
-  }
+  };
+
+  const enterPressed = (event) => {
+    if (gameStatus === "inprogress") {
+      if (event.key === "Enter") {
+        checkAnswer();
+      } else if (event.key === "Escape") {
+        console.log("escape");
+      }
+    }
+  };
+
+  const endGame = () => {
+    setGameStatus(status.END);
+  };
+
+  const startGame = () => {
+    setGameStatus(status.INPROGRESS);
+    setTimer(10);
+    setScore(0);
+    console.log(gameStatus);
+  };
 
   //This works, but this loads all files up at compile. Not efficient
-  const images = require.context('./assets/svg', true);
-  let pokemon = images('./4.svg');
-  console.log(showPokemon)
+  const images = require.context("./assets/svg", true);
+  const pokemon = randomNum ? images(`./${randomNum}.svg`) : null;
+  // console.log(showPokemon)
   return (
     <div className="app">
-      <span>Current Pokemon is: {currentPokemon ? currentPokemon.name : null}</span>
+      {/* temp span to show answer until dev is compconsted */}
+      <span style={{ color: "white" }}>
+        Current Pokemon is: {currentPokemon ? currentPokemon.name : null}
+      </span>
       <div className="app_gameScreen">
-        <img src={BACKGROUND} alt="" className="app_background"/>      
-        <img src={pokemon} alt="" className={"app_pokemon" + (showPokemon ? "" : " is-dark")}/>
+        <div>
+          <img src={BACKGROUND} alt="" className="app_background" />
+          <img
+            src={pokemon}
+            alt=""
+            className={"app_pokemon" + (showPokemon ? "" : " is-dark")}
+          />
+        </div>
+        <div className="app_gameInfo">
+          <span>{`Time: ${timer}s`}</span>
+          <span>{`Score: ${score}`}</span>
+        </div>
       </div>
-      <label>
-          Name:
-          <input type="text" value={answer} onChange={handleChange} />
+
+      <div className="app_input">
+        <label>
+          {" "}
+          Name
+          <input
+            type="text"
+            autoFocus
+            value={answer}
+            onKeyPress={enterPressed}
+            onChange={handleChange}
+          ></input>
         </label>
         <button onClick={() => checkAnswer()}>Submit</button>
-        <button onClick={() => console.log('Skip')}>Skip</button>
-        {score}    
-     </div>
+      </div>
+      <StartScreen handleClose={startGame} gameStatus={gameStatus}>
+        <h2>{gameStatus === "end" ? `You got ${score} correct!` : ""}</h2>
+      </StartScreen>
+    </div>
   );
 }
 

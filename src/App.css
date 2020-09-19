@@ -1,10 +1,11 @@
 * {
-  margin: 0
+  margin: 0;
 }
 
 .app {
   height: 100vh;
   width: auto;
+  background-color: black;
 }
 
 .app_gameScreen {
@@ -29,13 +30,36 @@
 
 .app_pokemon {
   position: absolute;
-  top: 200px;
-  left: 35%;
+  top: 150px;
+  left: 10%;
   /* text-align: center; */
-  z-index: 1;
+  /* z-index: 1; */
   /* filter: brightness(0) */
 }
 
 .is-dark {
-  filter: brightness(0)
+  filter: brightness(0);
+}
+
+.app_gameInfo {
+  display: flex;
+  flex-flow: column;
+  margin-left: 5vw;
+  font-size: 3vw;
+  color: yellow;
+}
+
+.app_input {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.app_input > button {
+  margin-left: 10px;
+}
+
+.app_input > label {
+  color: white;
+  /* margin-right: 10px; */
 }
