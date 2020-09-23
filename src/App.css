@@ -24,15 +24,17 @@
   width: 1000px;
   /* height: 100%; */
   /* padding: 100px auto; */
-  object-fit: contain;
+  /* object-fit: contain; */
   border-radius: 20px;
   margin: 0 auto;
 }
 
 .app_pokemon {
   position: absolute;
-  top: 150px;
-  left: 10%;
+  top: 250px;
+  left: 180px;
+  width: 220px;
+  height: auto;
   /* text-align: center; */
   /* z-index: 1; */
   /* filter: brightness(0) */
@@ -68,4 +70,8 @@
 
 .app_input > input {
   margin-left: 10px;
+}
+
+.app_input > form > button {
+  display: none;
 }

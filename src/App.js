@@ -95,6 +95,7 @@ function App() {
   };
 
   const enterPressed = (event) => {
+    console.log("clicked");
     if (gameStatus === "inprogress") {
       if (event.key === "Enter") {
         checkAnswer();
@@ -118,10 +119,11 @@ function App() {
     console.log(gameStatus);
   };
 
-  //This works, but this loads all files up at compile. Not efficient
   const images = require.context("./assets/svg", true);
   const pokemon = randomNum ? images(`./${randomNum}.svg`) : null;
-  // console.log(showPokemon)
+
+  console.log("rendering app");
+
   return (
     <div className="app">
       {/* temp span to show answer until dev is compconsted */}
@@ -148,12 +150,20 @@ function App() {
         <input
           id="answer"
           type="text"
-          autoFocus
+          autoFocus={true}
           value={answer}
           onKeyPress={enterPressed}
           onChange={handleChange}
         ></input>
         <button onClick={() => checkAnswer()}>Submit</button>
+        {/* <form>
+          <input
+            value={answer}
+            onChange={handleChange}
+            placeholder="Enter answer"
+          ></input>
+          <button onClick={checkAnswer}>Enter</button>
+        </form> */}
       </div>
       <StartScreen
         handleClose={startGame}
